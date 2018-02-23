@@ -83,12 +83,8 @@ class Playlist extends Component {
     return (
       <div style={{ width: "25%", display: "inline-block" }}>
         <img />
-        <h3>Playlist name</h3>
-        <ul>
-          <li>Song 1</li>
-          <li>Song 2</li>
-          <li>Song 3</li>
-        </ul>
+        <h3>{this.props.playlist.name}</h3>
+        <ul>{this.props.playlist.songs.map(song => <li>{song.name}</li>)}</ul>
       </div>
     );
   }
@@ -107,7 +103,7 @@ class App extends Component {
       this.setState({
         serverData: mockData
       });
-    }, 3000);
+    }, 1000);
   }
 
   render() {
@@ -116,15 +112,14 @@ class App extends Component {
         {this.state.serverData.user ? (
           <div>
             <h1 className="App-title">
-              {this.state.serverData.user.name}'s Title
+              {this.state.serverData.user.name}'s Playlist
             </h1>
             <PlaylistCounter playlists={this.state.serverData.user.playlist} />
             <HoursCounter playlists={this.state.serverData.user.playlist} />
             <Filter />
-            <Playlist />
-            <Playlist />
-            <Playlist />
-            <Playlist />
+            {this.state.serverData.user.playlist.map(playlist => (
+              <Playlist key={playlist.name} playlist={playlist} />
+            ))}
           </div>
         ) : (
           <h1>Loading...</h1>
