@@ -72,7 +72,10 @@ class Filter extends Component {
   render() {
     return (
       <div>
-        <input type="text" />
+        <input
+          type="text"
+          onKeyUp={event => this.props.onTextChange(event.target.value)}
+        />
       </div>
     );
   }
@@ -94,7 +97,8 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      serverData: {}
+      serverData: {},
+      filterString: ""
     };
   }
 
@@ -102,6 +106,11 @@ class App extends Component {
     setTimeout(() => {
       this.setState({
         serverData: mockData
+      });
+    }, 1000);
+    setTimeout(() => {
+      this.setState({
+        filterString: ""
       });
     }, 1000);
   }
@@ -116,10 +125,18 @@ class App extends Component {
             </h1>
             <PlaylistCounter playlists={this.state.serverData.user.playlist} />
             <HoursCounter playlists={this.state.serverData.user.playlist} />
-            <Filter />
-            {this.state.serverData.user.playlist.map(playlist => (
-              <Playlist key={playlist.name} playlist={playlist} />
-            ))}
+            <Filter
+              onTextChange={text => this.setState({ filterString: text })}
+            />
+            {this.state.serverData.user.playlist
+              .filter(playlist =>
+                playlist.name
+                  .toLowerCase()
+                  .includes(this.state.filterString.toLowerCase())
+              )
+              .map(playlist => (
+                <Playlist key={playlist.name} playlist={playlist} />
+              ))}
           </div>
         ) : (
           <h1>Loading...</h1>
